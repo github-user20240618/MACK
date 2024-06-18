@@ -1,0 +1,499 @@
+
+
+
+
+
+
+
+
+
+## [HOW TO REPRODUCE MACK.txt] is the Supplementary README file (for constructing MACK), and the Main README file (for testing MACK) is [README.txt] [Friendship Link]. 
+## This file focuses on solving the problems of "HOW TO REPRODUCE MACK"(as the title suggests). 
+## Here, we give several specific steps to help you to construct MACK VLKB from scratch. 
+## ★ Please see [README.txt] first [Friendship Link]. 
+
+【0】 Conda Environment
+## Please follow 【Environment】 in [README.txt]
+## Here shows DEFAULT configurations ONLY(for simplicity): 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+[Knowledge Construction]
+    [1] (python 3) pip install Pillow, pycocotools
+        ※ for basic python ability support
+    [2] OD(Object Detection) Models ## pre-trained on OD(Object Detection)/VC(Visual Classification) dataset
+        ※ for Object Detection: BBox and Feature Extraction
+        ★ we will use this tool to extract bboxes and feats of [4] and [5]
+        [a] bottom-up-attention.pytorch ## https://github.com/MILVLG/bottom-up-attention.pytorch  ## pre-trained on VG
+        ※ for BU(Bottom-Up) BBox and Feature Extraction
+            (1) R101 fixed 36 ## (default)/baseline
+                extract-bua-caffe-r101-fix36.yaml ## config file
+                bua-caffe-frcn-r101_with_attributes_fix36.pth ## model file
+    [3] ITM(Image-text Matching) Models ## pre-trained on Image-text paired dataset
+        ※ for ITM(Image-text Matching) Testing/Evaluation and Sim(Similarity) Matrices Construction
+        ★ we will use this tool to perform Testing/Evaluation and construct Sim(Similarity) Matrices on [5]
+            [a] CLIP ## https://github.com/openai/CLIP  ## pre-trained on 400M
+                (i)  RN50x16 ## (default)/baseline
+    [4] Datasets for Knowledge Construction ## Image-text paired dataset: Image for Prototype Features , Text for Vocabulary
+        [a] Visual Genome v1.2 ## https://homes.cs.washington.edu/~ranjay/visualgenome/api.html Version 1.2 of dataset completed as of August 29, 2016.
+        ※ .json files provide sentence and image/bbox info; .jpg files are images
+            (0) VG 108K images ## image_data.json, images.zip[extract => VG_100K/], images2.zip[extract => VG_100K_2/]
+            (1) VG 3.8M object-word ## objects.json  ## (default)/baseline
+        ※ The proposed MACK VLKB(Vision-and-Language Knowledge-Base) Knowledge have 2 key parts: 
+            (1) Vocabulary (basic words/tokens) is (are) from tokenized sentences [from .json]
+                ★ the Vocabulary files are saved in the directory of vocab_idx_word/ ## (default) my_vg_vocab_prototype_originated_from_pro_vocab_name_list_json_313KB_22_5_19_20_35.json
+            (2) Prototype Features are extracted from image object/region bboxes [from .jpg]
+                ★ the Prototype Features files are saved in the directory of p_feas_vlkb_word_idx_region_feat/ ## (default) my_p_feas_prototype_26276_240613.npy
+            ※ One word/token corresponds to one particular prototype features, ## one-to-one correspondance, just like a REAL Dictionary: a concept is matched with a picture
+               so that we can translate a symbolic word (in language) to its visual features (in vision). ## just like querying a REAL Dictionary: from Language to Vision
+    [5] Datasets for Evaluation(test split ONLY) ## Image-text paired dataset for ITM(Image-text Matching) and reranking task
+        ※ Sim(Similarity) Matrices are constructed on these datasets
+        ★ the BU(Bottom-Up) Pre-computed Features files are saved in the directory of bu_precomp_feats/ ## (default) test_acc_precomp_features.npy
+        ★ the Sim(Similarity) Matrices files are saved in the directory of base_sims/ ## (default) f30k_RN50x16 test embedding_sim.npy
+        [a] Flickr30k(F30k) ## https://shannon.cs.illinois.edu/DenotationGraph/
+            (1) 1K Test Images ## (default)/baseline
+    [6] Java
+        ※ basic Java support for [7] and [8]
+        ※ we install this environment on Windows[for simplicity], rather than Ubuntu/Linux server, 
+           so we don't know whether it can be installed on Ubuntu/Linux
+    [7] stanford-postagger-full-2020-11-17 ## https://nlp.stanford.edu/software/tagger.html -> stanford-tagger-4.2.0.zip
+        ※ for sentence to word/token tokenization and PoS(Part-of-Speech) Tagging => Unary relationship
+        ★ we will use this tool to construct tags file from the Testing Dataset in [5]
+        ★ the (Unary) PoS(Part-of-Speech) Tagging files are saved in the directory of tags_NN/ ## (default) tags
+    [8] stanford-parser-full-2020-11-17 ## https://nlp.stanford.edu/software/lex-parser.html -> stanford-parser-4.2.0.zip && stanford-corenlp-4.2.0-models-english.jar
+        ※ for sentence Parsing and word-word(token-token) dependency analysing => Binary relationship
+        ★ we will use this tool to construct parses file from the Testing Dataset in [5]
+        ★ the (Binary) Parsing dependency analysing files are saved in the directory of parses_JJ/ ## (default) parses
+[Knowledge Inference]
+    [9] (python 3) pip install python==3.6, numpy, h5py, pickle, torch
+        ※ for basic python ability support
+        ※ torch CPU ONLY version is ENOUGH ## Knowledge Inference DO NOT NEED GPU(s)
+
+## The command(s) are showed below: 
+(py27) wym@omnisky:/mnt/raid/wym/vsepp/temp_test/vse$ conda activate py36_pytorch1.4
+(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/temp_test/vse$ cd /mnt/raid/wym/vsepp/bottom-up-attention.pytorch
+(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ python
+## ★ It is advised that: you use the way of the [Python Interactive Console/Python Interpreter/Python Shell] to reproduce MACK. 
+## That is because the Shell mode is more flexible for you to excute, change, create the testing script, as well as making code comments. 
+## Every user may have different paths/names/ways/habits for datasets, codes, files, and more. 
+## So, you are advised to READ the script first, and you can ADAPT to your configurations as needed, then you can EXCUTE 1 code block before CHECKING the outputs/results. 
+
+
+
+
+【1】 Datasets (images .jpg + texts .json)
+## the file structure of Datasets are as follows: 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+/mnt/raid/wym/all_data/Visual_Genome/v1.2/ ## Visual Genome v1.2 (https://homes.cs.washington.edu/~ranjay/visualgenome/api.html Version 1.2 of dataset completed as of August 29, 2016.)
+    image_data.json ## every image has the info: ['url', 'width', 'height', 'image_id', 'coco_id', 'flickr_id', ]
+    objects.json ## every image has multiple annotated objects, each object has the info: ['x', 'y', 'w', 'h', 'object_id', 'names', 'synsets', ]
+    VG_100K/ ## 64345 (+1) images
+    VG_100K_2/ ## 43732 (+171) images
+    ## There are images that are not annotated in the json file. 
+    ## So, we need to move them into other folder. 
+    ## In VG_100K/ , there is 1 image that is moved to VG_100K_extra_1/. 
+    ## In VG_100K_2/ , there are 171 image that is moved to VG_100K_2_extra_171/. 
+    ## As a result, in VG_100K/ and VG_100K_2/, there are 64345+43732==108077 images in total. 
+
+## How to open Dataset? 
+## Just copy the following codes: 
+## ★ Please use your own path. 
+import json
+from copy import deepcopy
+import numpy as np
+import os
+
+f_image_data = json.load(open('../../all_data/Visual_Genome/v1.2/image_data.json', 'r')) ## open image_data.json  ## ★ Please use your own path. 
+l_image_data = list(f_image_data)
+list(l_image_data[0]) ## ['width', 'url', 'height', 'image_id', 'coco_id', 'flickr_id']
+
+f_objects = json.load(open('../../all_data/Visual_Genome/v1.2/objects.json', 'r')) ## open objects.json  ## ★ Please use your own path. 
+l_objects = list(f_objects)
+list(l_objects[0]) ## ['image_id', 'objects']
+
+
+
+
+【2】 BBox format
+## The BBox format is vital, because we must follow its format as long as we have to use the bottom-up-attention.pytorch/BU(Bottom-Up) to Extract BBox and Feature. 
+## Just copy the following codes: 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+def bbox_unit():
+    bbox = {} ## bbox template
+    item = {'bbox':[]}
+    bbox.update(item)
+    item = {'num_bbox':[]}
+    bbox.update(item)
+    item = {'image_h':[]}
+    bbox.update(item)
+    item = {'image_w':[]}
+    bbox.update(item)
+    bbox ## {'bbox': [], 'num_bbox': [], 'image_h': [], 'image_w': []}
+    ## You can add more attributes here. 
+    item = {'image_id':[]} ## add 'image_id' attribute, (absolute image index)
+    bbox.update(item)
+    item = {'image_idx':[]} ## add 'image_idx' attribute, the "[idx]" in codes (relative image index)
+    bbox.update(item)
+    item = {'bbox_id':[]} ## add 'bbox_id' attribute, absolute object index (from 'object_id')
+    bbox.update(item)
+    item = {'bbox_name':[]} ## add 'bbox_name' attribute, detected object class word (from 'names')
+    bbox.update(item)
+    item = {'bbox_synset':[]} ## add 'bbox_synset' attribute, the synonyms/aliases of object (from 'synsets')
+    bbox.update(item)
+    
+    return bbox
+
+
+
+
+【3】 Constructing bbox .npz files for every (valid) image in VG dataset
+## Just copy the following codes: 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+def construct_image_object_list(l_image_data=None, l_objects=None):
+    bbox = bbox_unit()
+    image_object_list_VG_100K   = []
+    image_object_list_VG_100K_2 = []
+    for i in range(len(l_image_data)):
+        if 'VG_100K_2' in l_image_data[i]['url']:
+            image_object_list = image_object_list_VG_100K_2
+        else:
+            image_object_list = image_object_list_VG_100K
+        
+        image_object_list += [deepcopy(bbox)]
+        image_object_list[-1]['image_w'] = np.array( l_image_data[i]['width'] )
+        image_object_list[-1]['image_h'] = np.array( l_image_data[i]['height'] )
+        image_object_list[-1]['num_bbox'] = np.array( len(l_objects[i]['objects']) )
+        image_object_list[-1]['image_id'] = l_image_data[i]['image_id']
+        image_object_list[-1]['image_idx'] = i
+        
+        _coordinates4    = []
+        _obj_id_list     = []
+        _obj_name_list   = []
+        _obj_synset_list = []
+        for j in range(len(l_objects[i]['objects'])):
+            _x = l_objects[i]['objects'][j]['x']
+            _y = l_objects[i]['objects'][j]['y']
+            _w = l_objects[i]['objects'][j]['w']
+            _h = l_objects[i]['objects'][j]['h']
+            _coordinates4 += [[_x, _y, _x+_w, _y+_h]]
+            
+            _obj_id     = l_objects[i]['objects'][j]['object_id'] ## 1058498
+            _obj_name   = l_objects[i]['objects'][j]['names']     ## [u'clock']
+            _obj_synset = l_objects[i]['objects'][j]['synsets']   ## [u'clock.n.01']
+            _obj_id_list     += [_obj_id]
+            _obj_name_list   += [_obj_name]
+            _obj_synset_list += [_obj_synset]
+        
+        image_object_list[-1]['bbox']        = np.array(_coordinates4).astype('float32')
+        image_object_list[-1]['bbox_id']     = _obj_id_list
+        image_object_list[-1]['bbox_name']   = _obj_name_list
+        image_object_list[-1]['bbox_synset'] = _obj_synset_list
+        
+    return image_object_list_VG_100K, image_object_list_VG_100K_2
+
+image_object_list_VG_100K, image_object_list_VG_100K_2 = construct_image_object_list(l_image_data=l_image_data, l_objects=l_objects)
+
+def save_bbox_npz(VG_No = 2, image_object_list_VG_100K=None, image_object_list_VG_100K_2=None):
+    if VG_No == 2:
+        image_object_list = image_object_list_VG_100K_2 ## VG_2
+    else:
+        image_object_list = image_object_list_VG_100K   ## VG_1
+    for i in range(len(image_object_list)):
+        _bbox        = image_object_list[i]['bbox']
+        _num_bbox    = image_object_list[i]['num_bbox']
+        _image_h     = image_object_list[i]['image_h']
+        _image_w     = image_object_list[i]['image_w']
+        _image_id    = image_object_list[i]['image_id']
+        _image_idx   = image_object_list[i]['image_idx']
+        _bbox_id     = image_object_list[i]['bbox_id']
+        _bbox_name   = image_object_list[i]['bbox_name']
+        _bbox_synset = image_object_list[i]['bbox_synset']
+        
+        output_file  = './VG_{}_bbox_npz/{}'.format(VG_No,_image_id) ## ★ Please use your own path. 
+        np.savez_compressed(output_file, bbox=_bbox, num_bbox=_num_bbox, image_h=_image_h, image_w=_image_w, image_id=_image_id, image_idx=_image_idx, bbox_id=_bbox_id, bbox_name=_bbox_name, bbox_synset=_bbox_synset)
+    
+    return True
+
+save_bbox_npz(VG_No=1, image_object_list_VG_100K=image_object_list_VG_100K, image_object_list_VG_100K_2=image_object_list_VG_100K_2) ## 2~3 min
+save_bbox_npz(VG_No=2, image_object_list_VG_100K=image_object_list_VG_100K, image_object_list_VG_100K_2=image_object_list_VG_100K_2) ## 1~2 min
+
+## The final file structure is as follows: 
+/mnt/raid/wym/all_data/bu_self_pytorch_precomp/VG/v2/objects_json/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/
+    VG1_bboxes/ ## 63899
+    VG2_bboxes/ ## 43295
+    VG_1_bbox_0_npz/ ## 446
+    VG_2_bbox_0_npz/ ## 437
+    ## We remove several .npz files whose image has NO BBOX at all: 
+    ## In VG1_bboxes/, 446 .npz files are moved to VG_1_bbox_npz/
+    ## In VG2_bboxes/, 437 .npz files are moved to VG_2_bbox_npz/
+    ## 108077-63899-43295==883==446+437
+
+
+
+
+【4】 Extracting Features from BBOX .npz files using BU
+## Just copy the following codes: 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+## VG_100K
+(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ ## conda environment
+CUDA_VISIBLE_DEVICES=4,5,6,7 \
+nohup python extract_features.py \
+--mode caffe \
+--num-cpus 32 \
+--gpus '4,5,6,7' \
+--extract-mode bbox_feats \
+--min-max-boxes '0,1000' \
+--config-file configs/bua-caffe/extract-bua-caffe-r101-fix36.yaml \
+--image-dir '../../all_data/Visual_Genome/v1.2/VG_100K' \
+--bbox-dir './VG_1_bbox_npz' \
+--out-dir './VG_1_bbox_ef_npz' \
+> ./ef/ef_bbox_feats_VG_100K_1.out &
+## VG_100K_2
+(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ ## conda environment
+CUDA_VISIBLE_DEVICES=0,1,2,3 \
+nohup python extract_features.py \
+--mode caffe \
+--num-cpus 32 \
+--gpus '0,1,2,3' \
+--extract-mode bbox_feats \
+--min-max-boxes '0,1000' \
+--config-file configs/bua-caffe/extract-bua-caffe-r101-fix36.yaml \
+--image-dir '../../all_data/Visual_Genome/v1.2/VG_100K_2' \
+--bbox-dir './VG_2_bbox_npz' \
+--out-dir './VG_2_bbox_ef_npz' \
+> ./ef/ef_bbox_feats_VG_100K_2.out &
+
+## Next, concatenate all features into one BIG .npy file. 
+## ★ It is suggested that merge them in 2 steps(for efficiency): you concatenate 500~1000 feat into 1 small .npy file first, and then concatenate them into 1 BIG file. Because the server may have limited RAM Memory. 
+## KEY CODES provided ONLY: 
+## ★ Please use your own path. 
+## KEY CODES: 
+    ## Step 1
+    npz_file = numpy.load(path1+'{}'.format(npz_fname)) ## open BU extracted .npz file  ## ★ Please use your own path. 
+    temp_acc_npz += [npz_file['x']] ## feat is in the ['x'], accumulate more feat
+    temp_acc_npz_precomp_features = numpy.concatenate(tuple(temp_acc_npz), axis=0) ## concatenate more feat into 1 small ndarray
+    np.save( feat_path+'acc_all_features/'+'{}'.format(i//freq)+'_all_acc_precomp_features', temp_acc_npz_precomp_features.astype('float32') ) ## to float32(less space), to small .npy file  ## ★ Please use your own path. 
+    ## Step 2
+    npy_file = numpy.load( feat_path+'acc_all_features/'+'{}'.format(i)+'_all_acc_precomp_features'+'.npy' ) ## open small .npy file  ## ★ Please use your own path. 
+    temp_acc_npy += [npy_file] ## accumulate more small .npy feat ndarray
+    temp_acc_npy_precomp_features = numpy.concatenate(tuple(temp_acc_npy), axis=0) ## concatenate more .npy feat ndarray into 1 BIG ndarray
+    np.save( feat_path+'acc_all_features/'+'FINAL'+'_all_acc_precomp_features', temp_acc_npy_precomp_features.astype('float32') ) ## to float32 (less space), to BIG .npy file  ## ★ Please use your own path. 
+## FINAL BIG bbox_feats .npy file: 
+    FINAL_all_acc_precomp_features.npy ## (3802374, 2048) 29.01GB 3.8M object feat .npy file
+
+
+
+
+【5】 Constructing object-word vocabulary file
+## This object-word vocabulary file is one-to-one correspond to the 3.8M object feat .npy file: FINAL_all_acc_precomp_features.npy. 
+## One object, one word. 
+## Just copy the following codes: 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+object_name = []
+for id, itm in enumerate(l_objects):
+    if l_objects[id]['objects'] != []: ## skip invalid image with no object BBOX annotation
+        temp_names = []
+        for i in range(len(l_objects[id]['objects'])):
+            temp_names += [l_objects[id]['objects'][i]['names']]
+        object_name += [temp_names]
+
+len(object_name) ## 107194
+
+object_words = []
+for i in range(len(object_name)): 
+    for j in range(len(object_name[i])): 
+        object_words += [object_name[i][j]]
+
+len(object_words) ## 3802374  ## 3.8M object words
+
+## ★ Please use your own path. 
+with open(os.path.join('/mnt/raid/wym/all_data/bu_self_pytorch_precomp/VG/v2/objects_json/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/', 'object_words.txt'), "w") as f:  ## ★ Please use your own path. 
+    for i in range(len(object_words)):
+        f.write( object_words[i][0]+'\n' )
+
+
+
+
+【6】 Constructing MACK VLKB
+## Just copy the following codes: 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+import json
+def json_save(content, jf_nm): 
+    with open(jf_nm, 'w') as jf:
+        json.dump( json.dumps(content), jf )
+
+def json_load(jf_nm): 
+    with open(jf_nm, 'r') as jf:
+        content = json.loads( json.load(jf) )
+    return content
+
+import numpy as np
+pth='/mnt/raid/wym/all_data/bu_self_pytorch_precomp/VG/v2/objects_json/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/' ## ★ Please use your own path. 
+feat=np.load(pth+'FINAL_all_acc_precomp_features.npy') ## 1min  ## ★ Please use your own path. 
+feat.shape ## (3802374, 2048)
+
+vocab = []
+with open(pth+'object_words.txt', 'r') as f: ## 2s  ## ★ Please use your own path. 
+    for line in f: 
+        vocab += [ line.strip() ]
+
+len(vocab) ## 3802374 words in total
+
+## word->proword
+def word_2_proword(word):
+    import string
+    exclude = set(string.punctuation) ## 32 basic punctuations(not include 0~9)
+    for punc in exclude: 
+        word = word.replace(punc, ' ')
+    return word.split()
+
+pro_vocab = [] ## 'hot dog' => ['hot', 'dog', ]
+for word in vocab: ## 30s
+    item = []
+    item += word_2_proword(word)
+    pro_vocab += [ item ]
+
+## pro_vocab
+all_pro_vocab = []
+for proword in pro_vocab: 
+    for basic_word in proword:
+        all_pro_vocab += [ basic_word ]
+
+all_pro_vocab_cnt = Counter(all_pro_vocab).most_common()
+len(all_pro_vocab_cnt) ## 26276
+list(all_pro_vocab_cnt)[:10] ## [('man', 98508), ('window', 73708), ('person', 71049), ('tree', 56434), ('shirt', 55038), ('building', 49244), ('sign', 48522), ('wall', 48072), ('woman', 44192), ('sky', 43161)]
+
+pro_vocab_name = [ itm[0] for itm in all_pro_vocab_cnt ]
+pro_vocab_freq = [ itm[1] for itm in all_pro_vocab_cnt ]
+json_save(pro_vocab_name, '/mnt/raid/wym/vsepp/79_temp/pro_vocab_name_list.json') ## ★ Please use your own path. 
+json_save(pro_vocab_freq, '/mnt/raid/wym/vsepp/79_temp/pro_vocab_freq_list.json') ## ★ Please use your own path. 
+## ★ We MUST use THIS/THE SAME pro_vocab_name file for EVERY MACK VLKB(if the dataset are the same), 
+##   because it contains the word/token sequence arranged in descending order of the word frequency, EVEN the word frequency of 2 words are THE SAME. 
+##   Otherwise, we are UNABLE to guarantee consistentance of word order between different constructing process. Because Counter(all_pro_vocab).most_common() CANNOT ASSURE the same order for the same frequency. 
+pro_vocab_name=json_load('/mnt/raid/wym/vsepp/79_temp/pro_vocab_name_list.json') ## ★ Please use your own path. 
+
+VLKB_ori = {}
+for i, proword in enumerate(pro_vocab): 
+    for basic_word in proword:
+        if basic_word not in VLKB_ori.keys():
+            VLKB_ori[basic_word]  = [ feat[i] ]
+        else:
+            VLKB_ori[basic_word] += [ feat[i] ]
+
+len(VLKB_ori) ## 26276 different words in total(in the MACK VLKB vocabulary)
+len(VLKB_ori['man']) ## 98508 samples/objects/bboxes/feats for the concept of 'man'(these samples/objects/bboxes/feats are ready to be averaged into 1 single prototype features, to represent the concept of 'man')
+
+my_vocab_to_id = {}
+my_id_to_vocab = {}
+my_p_feas = []
+
+for i, basic_word in enumerate(pro_vocab_name): ## 18s
+    my_vocab_to_id[basic_word] = i ## str -> int
+    my_id_to_vocab[str(i)] = basic_word ## str(int) -> str
+    avg_prototype_feat = np.array(VLKB_ori[basic_word]).mean(axis=0) ## 'man' .shape (98508, 2048) -> (2048,)  ## ★ DIY your own prototype style HERE. 
+    my_p_feas += [ avg_prototype_feat.reshape(1,-1) ] ## (2048,) -> (1, 2048)  ## equivalent to: np.expand_dims(avg_prototype_feat, axis=0) 
+
+_my_p_feas = np.concatenate(my_p_feas, axis=0)
+_my_p_feas.shape ## [former/latest ver.] [BETTER/BEST performance] (26276, 2048)  ## [ealier ver.] p_feas.npy [WORSE performance] (27801, 2048)
+
+np.save('/mnt/raid/wym/vsepp/79_temp/my_p_feas_prototype_26276_240613.npy', _my_p_feas) ## (26276, 2048)  ## ★ Please use your own path. 
+
+with open('/mnt/raid/wym/vsepp/79_temp/my_vg_vocab_prototype_originated_from_pro_vocab_name_list_json_313KB_22_5_19_20_35.json', mode='w') as f:  ## ★ Please use your own path. 
+    json.dump([my_vocab_to_id, my_id_to_vocab], f) ## str -> int and str(int) -> str mapping dicts
+
+
+
+
+【7】 Constructing image feats for test split dataset using OD model
+## Just copy the following codes: 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+##(1) Extracting bboxes
+(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ ## conda environment
+CUDA_VISIBLE_DEVICES=4,5,6,7 \
+nohup python extract_features.py \
+--mode caffe --num-cpus 32 --gpus '4,5,6,7' --extract-mode bboxes \
+--min-max-boxes '36,36' \
+--config-file configs/bua-caffe/extract-bua-caffe-r101-fix36.yaml \
+--image-dir ../../all_data/f30k/images \
+--bbox-dir ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/all_bboxes \
+--out-dir  ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/all_bboxes \
+>          ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/logs/ef_f30k_bboxes_logs_1.out \
+&
+
+##(2) Extracting features from bboxes
+(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ ## conda environment
+CUDA_VISIBLE_DEVICES=4,5,6,7 \
+nohup python extract_features.py \
+--mode caffe --num-cpus 32 --gpus '4,5,6,7' --extract-mode bbox_feats \
+--min-max-boxes '36,36' \
+--config-file configs/bua-caffe/extract-bua-caffe-r101-fix36.yaml \
+--image-dir ../../all_data/f30k/images \
+--bbox-dir ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/all_bboxes \
+--out-dir  ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/all_features \
+>          ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/logs/ef_f30k_features_logs_1.out \
+&
+
+## Next, concatenate all features into one BIG .npy file. 
+## KEY CODES provided ONLY: 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+## KEY CODES: 
+    ## Step 1
+    (the same as 【4】)
+    ## Step 2
+    (the same as 【4】)
+## FINAL img_feats file: 
+    test_acc_precomp_features.npy ## (1000, 36, 2048) 281.25MB 3.8M object feat .npy file
+
+
+
+
+【8】 Constructing Sim Matrix on test split dataset using ITM model
+## Next, constructing Sim Matrix before evaluating a ITM model. 
+## KEY CODES provided ONLY: 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+## KEY CODES: 
+    TPAMI_SI_2023_03_0601_MACK_Supplementary_Material\rerank\_tools\ITM_Eval\
+        inference.py ## constructing Sim Matrix for ITM Evaluation using ITM model
+## FINAL Sim Matrix file: 
+    f30k_RN50x16 test embedding_sim.npy ## (1000, 5000) 9.54MB float16
+
+
+
+
+【9】 Constructing (Unary)tags and (Binary)parses files for test split dataset using stanford corenlp tools
+## KEY CODES provided ONLY: 
+## ★ Please see tag_parse_README.txt first. 
+## ★ Please use your own path. 
+## ★ Change Hyper-params if you like. 
+## KEY CODES: 
+    TPAMI_SI_2023_03_0601_MACK_Supplementary_Material\rerank\_tools\tag_parse\
+        coco_tag.py ## to tokenize a sentence into words/tokens, and perform Unary PoS(Part-of-Speech) Tagging
+        coco_parse.py ## to perform Binary Parsing dependency analysing between 2 words/tokens in a sentence
+## FINAL tags/parses file: 
+    tags ## 1.88MB
+    parses ## 3.43MB
+
+
+
+
+## ★ Now, you have already completed the [Knowledge Construction] step, and have already constructed ALL files for the [Knowledge Inference] of MACK ! 
+## ★ Please move to the Main README file (for testing MACK) [README.txt] [Friendship Link] at the part 【Terminal/Shell Command】 and 【Python Evaluation Command(CPU ONLY)】 to continue evaluating your just built files ! 
+
+
+
+
+
+
+
+
+
+
+
