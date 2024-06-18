@@ -460,7 +460,7 @@ nohup python extract_features.py \
 ## ★ Please use your own path. 
 ## ★ Change Hyper-params if you like. 
 ## KEY CODES: 
-    TPAMI_SI_2023_03_0601_MACK_Supplementary_Material\rerank\_tools\ITM_Eval\
+    _tools\ITM_Eval\
         inference.py ## constructing Sim Matrix for ITM Evaluation using ITM model
 ## FINAL Sim Matrix file: 
     f30k_RN50x16 test embedding_sim.npy ## (1000, 5000) 9.54MB float16
@@ -474,7 +474,7 @@ nohup python extract_features.py \
 ## ★ Please use your own path. 
 ## ★ Change Hyper-params if you like. 
 ## KEY CODES: 
-    TPAMI_SI_2023_03_0601_MACK_Supplementary_Material\rerank\_tools\tag_parse\
+    _tools\tag_parse\
         coco_tag.py ## to tokenize a sentence into words/tokens, and perform Unary PoS(Part-of-Speech) Tagging
         coco_parse.py ## to perform Binary Parsing dependency analysing between 2 words/tokens in a sentence
 ## FINAL tags/parses file: 

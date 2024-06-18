@@ -20,7 +20,7 @@ the 2023 IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI 2
 with which the Supplementary Material (as well as source codes, models, datasets, files, etc.) is affiliated. 
 
 The source codes, model files, datasets, VLKB knowledge dictionaries of this paper 
-are all in the "TPAMI_SI_2023_03_0601_MACK_Supplementary_Material" directory. 
+are all in https://github.com/github-user20240618/MACK . 
 
 
 
@@ -124,7 +124,7 @@ are all in the "TPAMI_SI_2023_03_0601_MACK_Supplementary_Material" directory.
         ※ for sentence to word/token tokenization and PoS(Part-of-Speech) Tagging => Unary relationship
         ★ we will use this tool to construct tags file from the Testing Dataset in [5]
         ★ the (Unary) PoS(Part-of-Speech) Tagging files are saved in the directory of tags_NN/ ## (default) tags
-    [8] stanford-parser-full-2020-11-17 ## https://nlp.stanford.edu/software/lex-parser.html -> stanford-parser-4.2.0.zip && stanford-corenlp-4.2.0-models-english.jar
+    [8] stanford-parser-full-2020-11-17 ## https://nlp.stanford.edu/software/lex-parser.html -> stanford-parser-4.2.0.zip
         ※ for sentence Parsing and word-word(token-token) dependency analysing => Binary relationship
         ★ we will use this tool to construct parses file from the Testing Dataset in [5]
         ★ the (Binary) Parsing dependency analysing files are saved in the directory of parses_JJ/ ## (default) parses
@@ -135,56 +135,54 @@ are all in the "TPAMI_SI_2023_03_0601_MACK_Supplementary_Material" directory.
         ※ torch CPU ONLY version is ENOUGH ## Knowledge Inference DO NOT NEED GPU(s)
     [10] Codes, Files and more
         ★ the file structure of Codes and Files are as follows: 
-            TPAMI_SI_2023_03_0601_MACK_Supplementary_Material/
-                rerank/
-                    _tools/
-                        ITM_Eval/ ## how to construct Sim Matrix
-                            inference.py ## constructing Sim Matrix for ITM Evaluation using ITM model
-                            evaluation.py ## ITM Evaluation using Sim Matrix
-                        tag_parse/ ## how to construct tags and parses files
-                            stanford-tagger-4.2.0.zip
-                            stanford-parser-4.2.0.zip
-                            coco_parse.py
-                            coco_parses
-                            coco_tag.py
-                            coco_tags
-                            coco_test.txt
-                            f30k my_saved_test_annotations.txt ## (default)
-                            coco my_saved_test_annotations.txt
-                            tag_parse_README.txt
-                    base_sims/ ## the Sim(Similarity) Matrices files
-                        f30k_RN50x16 test embedding_sim.npy ## (default)
-                        ...
-                    bu_precomp_feats/ ## the BU(Bottom-Up) Pre-computed Features files
-                        test_acc_precomp_features.npy ## (default)
-                        ...
-                    p_feas_vlkb_word_idx_region_feat/ ## the Prototype Features files
-                        my_p_feas_prototype_26276_240613.npy ## (default)
-                        ...
-                    parses_JJ/ ## the Binary Parsing dependency analysing files
-                        parses ## (default)
-                        ...
-                    tags_NN/ ##  ## the Unary PoS(Part-of-Speech) Tagging files
-                        tags ## (default)
-                        ...
-                    vocab_idx_word/ ## the Vocabulary files
-                        my_vg_vocab_prototype_originated_from_pro_vocab_name_list_json_313KB_22_5_19_20_35.json ## (default)
-                        ...
-                    clip_t2i_i2t_jj.py ## the Knowledge Inference code
-                    logs/
-                        screen_Table_1_CLIP_f30k_i2t_top_k_5000_24_6_13_1.out ## the i2t test log file(latest ver.) [BETTER performance]
-                        screen_Table_1_CLIP_f30k_i2t_top_k_5000_23_2_28_1.out ## the i2t test log file(former ver.) [WORSE performance]
-                        screen_Table_1_CLIP_f30k_t2i_top_k_1000_24_6_13_1.out ## the t2i test log file(latest ver.) [BETTER performance]
-                        screen_Table_1_CLIP_f30k_t2i_top_k_1000_23_2_28_1.out ## the t2i test log file(former ver.) [WORSE performance]
-                    README.txt ## the Main README file (for testing MACK)
-                    HOW TO REPRODUCE MACK.txt ## the Supplementary README file (for constructing MACK)
+            _tools/
+                ITM_Eval/ ## how to construct Sim Matrix
+                    inference.py ## constructing Sim Matrix for ITM Evaluation using ITM model
+                    evaluation.py ## ITM Evaluation using Sim Matrix
+                tag_parse/ ## how to construct tags and parses files
+                    stanford-tagger-4.2.0.zip
+                    stanford-parser-4.2.0.zip
+                    coco_parse.py
+                    coco_parses
+                    coco_tag.py
+                    coco_tags
+                    coco_test.txt
+                    f30k my_saved_test_annotations.txt ## (default)
+                    coco my_saved_test_annotations.txt
+                    tag_parse_README.txt
+            base_sims/ ## the Sim(Similarity) Matrices files
+                f30k_RN50x16 test embedding_sim.npy ## (default)
+                ...
+            bu_precomp_feats/ ## the BU(Bottom-Up) Pre-computed Features files
+                test_acc_precomp_features.npy ## (default)
+                ...
+            p_feas_vlkb_word_idx_region_feat/ ## the Prototype Features files
+                my_p_feas_prototype_26276_240613.npy ## (default)
+                ...
+            parses_JJ/ ## the Binary Parsing dependency analysing files
+                parses ## (default)
+                ...
+            tags_NN/ ##  ## the Unary PoS(Part-of-Speech) Tagging files
+                tags ## (default)
+                ...
+            vocab_idx_word/ ## the Vocabulary files
+                my_vg_vocab_prototype_originated_from_pro_vocab_name_list_json_313KB_22_5_19_20_35.json ## (default)
+                ...
+            clip_t2i_i2t_jj.py ## the Knowledge Inference code
+            logs/ ## test logs
+                screen_Table_1_CLIP_f30k_i2t_top_k_5000_24_6_13_1.out ## the i2t test log file(latest ver.) [BETTER performance]
+                screen_Table_1_CLIP_f30k_i2t_top_k_5000_23_2_28_1.out ## the i2t test log file(former ver.) [WORSE performance]
+                screen_Table_1_CLIP_f30k_t2i_top_k_1000_24_6_13_1.out ## the t2i test log file(latest ver.) [BETTER performance]
+                screen_Table_1_CLIP_f30k_t2i_top_k_1000_23_2_28_1.out ## the t2i test log file(former ver.) [WORSE performance]
+            README.txt ## the Main README file (for testing MACK)
+            HOW TO REPRODUCE MACK.txt ## the Supplementary README file (for constructing MACK)
 
 
 
 
 【Terminal/Shell Command】
 conda activate <your_env_name>
-cd <your_path>/TPAMI_SI_2023_03_0601_MACK_Supplementary_Material/rerank/
+cd <your_path>/
 
 
 
