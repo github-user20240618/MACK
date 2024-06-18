@@ -69,9 +69,9 @@
         ※ torch CPU ONLY version is ENOUGH ## Knowledge Inference DO NOT NEED GPU(s)
 
 ## The command(s) are showed below: 
-(py27) wym@omnisky:/mnt/raid/wym/vsepp/temp_test/vse$ conda activate py36_pytorch1.4
-(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/temp_test/vse$ cd /mnt/raid/wym/vsepp/bottom-up-attention.pytorch
-(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ python
+(py27) xxx@zzzzzzz:/mnt/raid/xxx/vsepp/temp_test/vse$ conda activate py36_pytorch1.4
+(py36_pytorch1.4) xxx@zzzzzzz:/mnt/raid/xxx/vsepp/temp_test/vse$ cd /mnt/raid/xxx/vsepp/bottom-up-attention.pytorch
+(py36_pytorch1.4) xxx@zzzzzzz:/mnt/raid/xxx/vsepp/bottom-up-attention.pytorch$ python
 ## ★ It is advised that: you use the way of the [Python Interactive Console/Python Interpreter/Python Shell] to reproduce MACK. 
 ## That is because the Shell mode is more flexible for you to excute, change, create the testing script, as well as making code comments. 
 ## Every user may have different paths/names/ways/habits for datasets, codes, files, and more. 
@@ -84,7 +84,7 @@
 ## the file structure of Datasets are as follows: 
 ## ★ Please use your own path. 
 ## ★ Change Hyper-params if you like. 
-/mnt/raid/wym/all_data/Visual_Genome/v1.2/ ## Visual Genome v1.2 (https://homes.cs.washington.edu/~ranjay/visualgenome/api.html Version 1.2 of dataset completed as of August 29, 2016.)
+/mnt/raid/xxx/all_data/Visual_Genome/v1.2/ ## Visual Genome v1.2 (https://homes.cs.washington.edu/~ranjay/visualgenome/api.html Version 1.2 of dataset completed as of August 29, 2016.)
     image_data.json ## every image has the info: ['url', 'width', 'height', 'image_id', 'coco_id', 'flickr_id', ]
     objects.json ## every image has multiple annotated objects, each object has the info: ['x', 'y', 'w', 'h', 'object_id', 'names', 'synsets', ]
     VG_100K/ ## 64345 (+1) images
@@ -220,7 +220,7 @@ save_bbox_npz(VG_No=1, image_object_list_VG_100K=image_object_list_VG_100K, imag
 save_bbox_npz(VG_No=2, image_object_list_VG_100K=image_object_list_VG_100K, image_object_list_VG_100K_2=image_object_list_VG_100K_2) ## 1~2 min
 
 ## The final file structure is as follows: 
-/mnt/raid/wym/all_data/bu_self_pytorch_precomp/VG/v2/objects_json/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/
+/mnt/raid/xxx/all_data/bu_self_pytorch_precomp/VG/v2/objects_json/YOUR_PATH/
     VG1_bboxes/ ## 63899
     VG2_bboxes/ ## 43295
     VG_1_bbox_0_npz/ ## 446
@@ -238,7 +238,7 @@ save_bbox_npz(VG_No=2, image_object_list_VG_100K=image_object_list_VG_100K, imag
 ## ★ Please use your own path. 
 ## ★ Change Hyper-params if you like. 
 ## VG_100K
-(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ ## conda environment
+(py36_pytorch1.4) xxx@zzzzzzz:/mnt/raid/xxx/vsepp/bottom-up-attention.pytorch$ ## conda environment
 CUDA_VISIBLE_DEVICES=4,5,6,7 \
 nohup python extract_features.py \
 --mode caffe \
@@ -252,7 +252,7 @@ nohup python extract_features.py \
 --out-dir './VG_1_bbox_ef_npz' \
 > ./ef/ef_bbox_feats_VG_100K_1.out &
 ## VG_100K_2
-(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ ## conda environment
+(py36_pytorch1.4) xxx@zzzzzzz:/mnt/raid/xxx/vsepp/bottom-up-attention.pytorch$ ## conda environment
 CUDA_VISIBLE_DEVICES=0,1,2,3 \
 nohup python extract_features.py \
 --mode caffe \
@@ -311,7 +311,7 @@ for i in range(len(object_name)):
 len(object_words) ## 3802374  ## 3.8M object words
 
 ## ★ Please use your own path. 
-with open(os.path.join('/mnt/raid/wym/all_data/bu_self_pytorch_precomp/VG/v2/objects_json/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/', 'object_words.txt'), "w") as f:  ## ★ Please use your own path. 
+with open(os.path.join('/mnt/raid/xxx/all_data/bu_self_pytorch_precomp/VG/v2/objects_json/YOUR_PATH/', 'object_words.txt'), "w") as f:  ## ★ Please use your own path. 
     for i in range(len(object_words)):
         f.write( object_words[i][0]+'\n' )
 
@@ -333,7 +333,7 @@ def json_load(jf_nm):
     return content
 
 import numpy as np
-pth='/mnt/raid/wym/all_data/bu_self_pytorch_precomp/VG/v2/objects_json/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/' ## ★ Please use your own path. 
+pth='/mnt/raid/xxx/all_data/bu_self_pytorch_precomp/VG/v2/objects_json/YOUR_PATH/' ## ★ Please use your own path. 
 feat=np.load(pth+'FINAL_all_acc_precomp_features.npy') ## 1min  ## ★ Please use your own path. 
 feat.shape ## (3802374, 2048)
 
@@ -370,12 +370,12 @@ list(all_pro_vocab_cnt)[:10] ## [('man', 98508), ('window', 73708), ('person', 7
 
 pro_vocab_name = [ itm[0] for itm in all_pro_vocab_cnt ]
 pro_vocab_freq = [ itm[1] for itm in all_pro_vocab_cnt ]
-json_save(pro_vocab_name, '/mnt/raid/wym/vsepp/79_temp/pro_vocab_name_list.json') ## ★ Please use your own path. 
-json_save(pro_vocab_freq, '/mnt/raid/wym/vsepp/79_temp/pro_vocab_freq_list.json') ## ★ Please use your own path. 
+json_save(pro_vocab_name, '/mnt/raid/xxx/vsepp/yy_temp/pro_vocab_name_list.json') ## ★ Please use your own path. 
+json_save(pro_vocab_freq, '/mnt/raid/xxx/vsepp/yy_temp/pro_vocab_freq_list.json') ## ★ Please use your own path. 
 ## ★ We MUST use THIS/THE SAME pro_vocab_name file for EVERY MACK VLKB(if the dataset are the same), 
 ##   because it contains the word/token sequence arranged in descending order of the word frequency, EVEN the word frequency of 2 words are THE SAME. 
 ##   Otherwise, we are UNABLE to guarantee consistentance of word order between different constructing process. Because Counter(all_pro_vocab).most_common() CANNOT ASSURE the same order for the same frequency. 
-pro_vocab_name=json_load('/mnt/raid/wym/vsepp/79_temp/pro_vocab_name_list.json') ## ★ Please use your own path. 
+pro_vocab_name=json_load('/mnt/raid/xxx/vsepp/yy_temp/pro_vocab_name_list.json') ## ★ Please use your own path. 
 
 VLKB_ori = {}
 for i, proword in enumerate(pro_vocab): 
@@ -401,9 +401,9 @@ for i, basic_word in enumerate(pro_vocab_name): ## 18s
 _my_p_feas = np.concatenate(my_p_feas, axis=0)
 _my_p_feas.shape ## [former/latest ver.] [BETTER/BEST performance] (26276, 2048)  ## [ealier ver.] p_feas.npy [WORSE performance] (27801, 2048)
 
-np.save('/mnt/raid/wym/vsepp/79_temp/my_p_feas_prototype_26276_240613.npy', _my_p_feas) ## (26276, 2048)  ## ★ Please use your own path. 
+np.save('/mnt/raid/xxx/vsepp/yy_temp/my_p_feas_prototype_26276_240613.npy', _my_p_feas) ## (26276, 2048)  ## ★ Please use your own path. 
 
-with open('/mnt/raid/wym/vsepp/79_temp/my_vg_vocab_prototype_originated_from_pro_vocab_name_list_json_313KB_22_5_19_20_35.json', mode='w') as f:  ## ★ Please use your own path. 
+with open('/mnt/raid/xxx/vsepp/yy_temp/my_vg_vocab_prototype_originated_from_pro_vocab_name_list_json_313KB_22_5_19_20_35.json', mode='w') as f:  ## ★ Please use your own path. 
     json.dump([my_vocab_to_id, my_id_to_vocab], f) ## str -> int and str(int) -> str mapping dicts
 
 
@@ -414,29 +414,29 @@ with open('/mnt/raid/wym/vsepp/79_temp/my_vg_vocab_prototype_originated_from_pro
 ## ★ Please use your own path. 
 ## ★ Change Hyper-params if you like. 
 ##(1) Extracting bboxes
-(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ ## conda environment
+(py36_pytorch1.4) xxx@zzzzzzz:/mnt/raid/xxx/vsepp/bottom-up-attention.pytorch$ ## conda environment
 CUDA_VISIBLE_DEVICES=4,5,6,7 \
 nohup python extract_features.py \
 --mode caffe --num-cpus 32 --gpus '4,5,6,7' --extract-mode bboxes \
 --min-max-boxes '36,36' \
 --config-file configs/bua-caffe/extract-bua-caffe-r101-fix36.yaml \
 --image-dir ../../all_data/f30k/images \
---bbox-dir ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/all_bboxes \
---out-dir  ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/all_bboxes \
->          ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/logs/ef_f30k_bboxes_logs_1.out \
+--bbox-dir ../../all_data/bu_self_pytorch_precomp/f30k/YOUR_PATH/all_bboxes \
+--out-dir  ../../all_data/bu_self_pytorch_precomp/f30k/YOUR_PATH/all_bboxes \
+>          ../../all_data/bu_self_pytorch_precomp/f30k/YOUR_PATH/logs/ef_f30k_bboxes_logs_1.out \
 &
 
 ##(2) Extracting features from bboxes
-(py36_pytorch1.4) wym@omnisky:/mnt/raid/wym/vsepp/bottom-up-attention.pytorch$ ## conda environment
+(py36_pytorch1.4) xxx@zzzzzzz:/mnt/raid/xxx/vsepp/bottom-up-attention.pytorch$ ## conda environment
 CUDA_VISIBLE_DEVICES=4,5,6,7 \
 nohup python extract_features.py \
 --mode caffe --num-cpus 32 --gpus '4,5,6,7' --extract-mode bbox_feats \
 --min-max-boxes '36,36' \
 --config-file configs/bua-caffe/extract-bua-caffe-r101-fix36.yaml \
 --image-dir ../../all_data/f30k/images \
---bbox-dir ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/all_bboxes \
---out-dir  ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/all_features \
->          ../../all_data/bu_self_pytorch_precomp/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/logs/ef_f30k_features_logs_1.out \
+--bbox-dir ../../all_data/bu_self_pytorch_precomp/f30k/YOUR_PATH/all_bboxes \
+--out-dir  ../../all_data/bu_self_pytorch_precomp/f30k/YOUR_PATH/all_features \
+>          ../../all_data/bu_self_pytorch_precomp/f30k/YOUR_PATH/logs/ef_f30k_features_logs_1.out \
 &
 
 ## Next, concatenate all features into one BIG .npy file. 

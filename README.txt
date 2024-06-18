@@ -154,10 +154,10 @@ are all in https://github.com/github-user20240618/MACK .
                 f30k_RN50x16 test embedding_sim.npy ## (default)
                 ...
             bu_precomp_feats/ ## the BU(Bottom-Up) Pre-computed Features files
-                test_acc_precomp_features.npy ## (default)
+                test_acc_precomp_features.npy ## (default)  ## download at https://drive.google.com/drive/folders/1dl6KWmEDBdy8eSTbDNuaSMx86KRWImC3?usp=drive_link 
                 ...
             p_feas_vlkb_word_idx_region_feat/ ## the Prototype Features files
-                my_p_feas_prototype_26276_240613.npy ## (default)
+                my_p_feas_prototype_26276_240613.npy ## (default)  ## download at https://drive.google.com/drive/folders/1NLgn1jtK3qxbyRV_fz-vo8SU_hMbM3zL?usp=drive_link 
                 ...
             parses_JJ/ ## the Binary Parsing dependency analysing files
                 parses ## (default)
@@ -209,7 +209,7 @@ nohup python clip_t2i_i2t_jj.py \
 --p_feas='./p_feas_vlkb_word_idx_region_feat/my_p_feas_prototype_26276_240613.npy' \
 --tags='./tags_NN/tags' \
 --parses='./parses_JJ/parses' \
---img_feats='./bu_precomp_feats/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/test_acc_precomp_features.npy' \
+--img_feats='./bu_precomp_feats/test_acc_precomp_features.npy' \
 --npy_redundance=1 \
 --sims='./base_sims/f30k_RN50x16 test embedding_sim.npy' \
 --metric='cosine' \
@@ -240,7 +240,7 @@ nohup python clip_t2i_i2t_jj.py \
 --p_feas='./p_feas_vlkb_word_idx_region_feat/my_p_feas_prototype_26276_240613.npy' \
 --tags='./tags_NN/tags' \
 --parses='./parses_JJ/parses' \
---img_feats='./bu_precomp_feats/f30k/PRET_caffedl_PRETTYPE_1stage_PARAM_caffedl_DATA_vg_LOSS_bu_ARCH_frcnn_BBONE_r101_fix36_BBOX_roi_FEAT_36/test_acc_precomp_features.npy' \
+--img_feats='./bu_precomp_feats/test_acc_precomp_features.npy' \
 --npy_redundance=1 \
 --sims='./base_sims/f30k_RN50x16 test embedding_sim.npy' \
 --metric='cosine' \
